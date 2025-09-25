@@ -19,7 +19,7 @@ The dataset used for this project was obtained from Kaggle.
 A netflix table was created containing columns such as: show_id, tipo, title, director, casts, country, date_added, release_year, rating, duration, listed genres, and descriptions.
 
 
-CREATE TABLE netflix
+<pre> CREATE TABLE netflix
 (
 show_id VARCHAR(20),
 tipo VARCHAR(15),
@@ -33,20 +33,22 @@ rating VARCHAR(30),
 duration VARCHAR(150),
 listed_in VARCHAR(80),
 descriptions VARCHAR(300)
-);
+); 
+</pre>
 
 ## Business Problems and Solutions
 
 ### 1. Determine how many titles are movies versus TV shows.
-
+<pre>
 SELECT
 	tipo, 
 	COUNT(*) AS total_content
 FROM netflix
 GROUP BY tipo;
+</pre>
 
 ### 2. Identify the most frequent rating for each type of content.
-
+<pre>
 SELECT
 	tipo,
 	rating
@@ -68,17 +70,17 @@ FROM
 ) AS t1
 WHERE
 	ranking =1;
-
+</pre>
 ### 3. Retrieve all movies released in a specific year.
-
+<pre>
 SELECT * FROM netflix
 WHERE 
 	tipo='Movie'
 	AND
 	release_year= 2020;
-
+</pre>
 ### 4. Find the top 5 countries with the largest number of titles available on Netflix.
-
+<pre>
 SELECT 
     TRIM(country_split) AS new_country,
     COUNT(n.show_id) AS total_content
@@ -93,9 +95,9 @@ WHERE TRIM(country_split) <> ''
 GROUP BY new_country
 ORDER BY total_content DESC
 LIMIT 5;
-
+</pre>
 ### 5. Identify the longest movie in terms of duration.
-
+<pre>
 SELECT 
     title,
     CAST(REPLACE(duration, ' min', '') AS UNSIGNED) AS new_duration
@@ -108,29 +110,36 @@ WHERE tipo = 'Movie'
         WHERE tipo = 'Movie'
           AND duration LIKE '%min'
   );
-  
+</pre>
 ### 6. List all content added to Netflix within the last 5 years.
 
+<pre>
 SELECT *
 FROM netflix
 WHERE STR_TO_DATE(TRIM(date_added), '%M %e, %Y') >= DATE_SUB(CURDATE(), INTERVAL 5 YEAR);
+</pre>
 
 ### 7. Filter content directed by a specific person (e.g., Rajiv Chilaka).
 
+<pre>
 SELECT * FROM netflix
 WHERE LOWER(director) LIKE '%rajiv chilaka%'
-
+</pre>
+	
 ### 8. List TV shows with more than 5 seasons.
 
+<pre>
 SELECT 
     *,
     CAST(SUBSTRING_INDEX(duration, ' ', 1) AS UNSIGNED) AS new_duration
 FROM netflix
 WHERE tipo = 'TV Show'
   AND CAST(SUBSTRING_INDEX(duration, ' ', 1) AS UNSIGNED) > 5;
-  
+</pre>	
+	
 ### 9. Count the number of titles in each available genre.
 
+<pre>
 SELECT 
     TRIM(genre) AS genre,
     COUNT(*) AS total_content
@@ -144,9 +153,11 @@ WHERE TRIM(genre) <> ''
   AND genre IS NOT NULL
 GROUP BY genre
 ORDER BY total_content DESC;
+</pre>
 
+	
 ### 10. Analyze India’s yearly releases and return the 5 years with the highest average release ratio.
-
+<pre>
 SELECT 
     YEAR(STR_TO_DATE(date_added, '%M %d, %Y')) AS ano,
     COUNT(*) AS yearly_content,
@@ -154,10 +165,11 @@ SELECT
 FROM netflix
 WHERE country = 'India'
 GROUP BY ano
-
+</pre>
 
 ### 11. Retrieve all movies categorized as documentaries.
 
+<pre>
 SELECT * FROM netflix
 WHERE
 	LOWER(listed_in) LIKE '%documentaries%'
@@ -168,10 +180,11 @@ WHERE
 SELECT * FROM netflix
 WHERE
 	director =''
-
+</pre>
 
 ### 12. Identify all content without a director assigned.
 
+<pre>
 SELECT * FROM netflix
 WHERE
 	director =''
@@ -183,10 +196,11 @@ WHERE
 	LOWER(casts) LIKE '%Salman Khan%'
 	AND
 	release_year > EXTRACT(YEAR FROM CURRENT_DATE) - 10
-
+</pre>
 
 ### 14. List the top 10 actors who appeared in the highest number of Indian-produced movies.
 
+<pre>
 WITH RECURSIVE actor_split AS (
     SELECT 
         TRIM(SUBSTRING_INDEX(casts, ',', 1)) AS actor,
@@ -210,9 +224,10 @@ WHERE actor <> ''
 GROUP BY actor
 ORDER BY total_content DESC
 LIMIT 10;
+</pre>
 
 ### 15. Categorize content based on whether the description includes keywords like kill or violence.
-
+<pre>
 WITH NEW_table
 AS
 (
@@ -231,7 +246,7 @@ SELECT
 	COUNT(*) AS total_content
 FROM new_table
 GROUP BY 1
-
+</pre>pre>
 
 ## Findings and Conclusion
 
